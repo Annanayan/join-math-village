@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Math Village Flyer</title>
   <style>
+    /* ---------- Base ---------- */
     body{
       margin:0; padding:40px;
       background:linear-gradient(45deg,#f0f0f0,#e8e8e8);
       font-family:'Comic Sans MS', cursive, sans-serif;
       min-height:100vh; display:flex; justify-content:center; align-items:center;
     }
-
     .tile-background{
       position:absolute; inset:0;
       background-image:
@@ -19,7 +19,6 @@
         linear-gradient(90deg,#ccc 1px, transparent 1px);
       background-size:50px 50px; z-index:0;
     }
-
     .flyer-container{ position:relative; z-index:1; transform:rotate(-8deg); transition:.3s ease; }
     .flyer-container:hover{ transform:rotate(-3deg) scale(1.02); }
 
@@ -31,7 +30,7 @@
     }
     .flyer::before{
       content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
-      background:radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      background:radial-gradient(circle, rgba(255,255,255,.10) 0%, transparent 70%);
       animation:shine 6s ease-in-out infinite;
     }
     @keyframes shine{ 0%,100%{transform:translate(-100%,-100%) rotate(30deg);} 50%{transform:translate(100%,100%) rotate(30deg);} }
@@ -39,61 +38,93 @@
     .title{ font-size:48px; font-weight:bold; color:#8B4513; margin-bottom:10px; text-shadow:2px 2px 4px rgba(0,0,0,.1); transform:rotate(-2deg); }
     .subtitle{ font-size:14px; color:#8B4513; margin-bottom:20px; letter-spacing:2px; text-transform:uppercase; }
 
-    /* dog pic */
+    /* ---------- CTA Row（放大狗狗） ---------- */
     .cta-row{
-      height:80px;           /* 与原来 dog-illustration 同尺寸 */
+      height:110px;              /* ↑ 原80px -> 110px */
       margin:20px 0;
       display:flex; align-items:center; position:relative;
     }
     .dog-img{
-      width:80px; height:80px; object-fit:contain; user-select:none; -webkit-user-drag:none;
+      width:110px;               /* ↑ 原80 -> 110 */
+      height:110px;
+      object-fit:contain;
+      user-select:none; -webkit-user-drag:none;
       filter: drop-shadow(0 1px 0 rgba(0,0,0,.05));
     }
+    .dog-link{ display:inline-block; }
 
+    /* ---------- Click to try（紫色荧光流动边框） ---------- */
+    /* 动画角度变量（更丝滑的渐变旋转） */
+    @property --angle{
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
     .cta-link{
+      --angle: 0deg;
       position:absolute; left:50%; transform:translateX(-50%);
       display:inline-flex; align-items:center; gap:10px;
-      padding:10px 14px; border:2px solid #8B4513; border-radius:12px;
-      color:#8B4513; background:rgba(255,255,255,.3);
-      font-weight:bold; text-decoration:none; transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+      padding:10px 14px; border-radius:12px; font-weight:bold; text-decoration:none;
+      color:#6d28d9;                     /* 文字紫色 */
+      border:2px solid transparent;      /* 用双背景做渐变边框 */
+      background:
+        linear-gradient(rgba(255,255,255,.35), rgba(255,255,255,.35)) padding-box,
+        conic-gradient(from var(--angle),
+          #c084fc, #a855f7, #7c3aed, #8b5cf6, #c084fc) border-box;
+      animation: rotate 4s linear infinite, glow 1.6s ease-in-out infinite alternate;
+      box-shadow: 0 0 0 rgba(124,58,237,0); /* 与glow同步 */
     }
-    .cta-link:hover{
-      transform:translateX(-50%) translateY(-2px);
-      box-shadow:0 4px 8px rgba(0,0,0,.12);
-      background:rgba(255,255,255,.45);
+    @keyframes rotate{ to { --angle: 360deg; } }
+    @keyframes glow{
+      from{ box-shadow:0 0 6px rgba(167,139,250,.6), 0 0 12px rgba(147,51,234,.35); }
+      to  { box-shadow:0 0 14px rgba(167,139,250,.9), 0 0 26px rgba(147,51,234,.55); }
     }
 
-    /* 小“悬浮鼠标箭头” */
+    /* 小“悬浮鼠标箭头”（紫色） */
     .cursor{
       width:0; height:0; display:inline-block;
-      border-left:12px solid #8B4513;       /* 箭头主体 */
-      border-top:10px solid transparent;
-      border-bottom:10px solid transparent;
+      border-left:12px solid #7c3aed;
+      border-top:10px solid transparent; border-bottom:10px solid transparent;
       transform:rotate(-15deg);
-      filter:drop-shadow(0 1px 0 rgba(0,0,0,.15));
+      filter:drop-shadow(0 1px 0 rgba(124,58,237,.35));
       animation:bob 1.2s ease-in-out infinite alternate;
     }
-    @keyframes bob{ from{ transform:translateY(0) rotate(-15deg); } to{ transform:translateY(-4px) rotate(-15deg); } }
+    @keyframes bob{ from{ transform:translateY(0) rotate(-15deg);} to{ transform:translateY(-4px) rotate(-15deg);} }
 
     .welcome-text{
       font-size:18px; color:#8B4513; line-height:1.4; margin:30px 0; text-align:center; font-weight:bold;
-      background:rgba(255,255,255,.3); padding:15px; border-radius:10px; border:2px dashed #8B4513;
+      background:rgba(255,255,255,.30); padding:15px; border-radius:10px; border:2px dashed #8B4513;
     }
 
+    /* ---------- Features ---------- */
     .features{ margin-top:40px; }
     .feature-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:15px; }
     .feature-tag{
-      background:rgba(255,255,255,.4); border:2px solid #8B4513; border-radius:20px;
+      background:rgba(255,255,255,.40); border:2px solid #8B4513; border-radius:20px;
       padding:8px 12px; font-size:11px; color:#8B4513; text-align:center; font-weight:bold;
       transition:all .3s ease; cursor:pointer;
     }
-    .feature-tag:hover{ background:rgba(255,255,255,.7); transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,.1); }
+    .feature-tag:hover{ background:rgba(255,255,255,.70); transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,.1); }
 
-    .decoration{ position:absolute; color:#8B4513; opacity:.3; font-size:20px; animation:float 4s ease-in-out infinite; }
+    /* ---------- 紫色霓虹闪烁的装饰符号 ---------- */
+    .decoration{
+      position:absolute; font-size:20px; opacity:.95;
+      color:#7c3aed;
+      text-shadow:
+        0 0 6px rgba(167,139,250,.95),
+        0 0 16px rgba(147,51,234,.65),
+        0 0 28px rgba(126,34,206,.45);
+      animation: float 4s ease-in-out infinite,
+                 neonPulse 2.2s ease-in-out infinite;
+    }
     .decoration1{ top:80px; right:50px; animation-delay:0s; }
-    .decoration2{ bottom:100px; left:30px; animation-delay:2s; }
-    .decoration3{ top:200px; left:20px; animation-delay:1s; }
-    @keyframes float{ 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-10px) rotate(180deg);} }
+    .decoration2{ bottom:100px; left:30px; animation-delay:.6s; }
+    .decoration3{ top:200px; left:20px; animation-delay:1.2s; }
+    @keyframes float{ 0%,100%{ transform:translateY(0) rotate(0);} 50%{ transform:translateY(-10px) rotate(180deg);} }
+    @keyframes neonPulse{
+      0%,100%{ text-shadow:0 0 6px rgba(167,139,250,.9),0 0 16px rgba(147,51,234,.6),0 0 28px rgba(126,34,206,.45); }
+      50%    { text-shadow:0 0 10px rgba(167,139,250,1),0 0 28px rgba(147,51,234,.9),0 0 40px rgba(126,34,206,.65); }
+    }
   </style>
 </head>
 <body>
@@ -104,14 +135,11 @@
       <div class="title">Math Village</div>
       <div class="subtitle">Learning • Growing • Exploring</div>
 
-      <!-- dog pic +  CTA -->
+      <!-- 左：放大后的狗狗图片；中：紫色荧光“Click to try” -->
       <div class="cta-row">
-        <!-- 左：狗狗图片（固定 80×80），点击可进入站点 -->
         <a class="dog-link" href="https://annanayan.github.io/Math-Village" target="_blank" rel="noopener noreferrer" aria-label="Open Math Village">
           <img src="assets/dog.png" alt="Dog studying with a laptop" class="dog-img"/>
         </a>
-
-        <!-- 中：点击体验 + 悬浮鼠标箭头 -->
         <a class="cta-link" href="https://annanayan.github.io/Math-Village" target="_blank" rel="noopener noreferrer">
           Click to try
           <span class="cursor" aria-hidden="true"></span>
